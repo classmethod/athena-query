@@ -6,16 +6,16 @@ import {
   StartQueryExecutionCommand,
 } from "@aws-sdk/client-athena";
 import { mockClient } from "aws-sdk-client-mock";
-import AthenaExpress from "..";
+import AthenaQuery from "..";
 
 const athenaMock = mockClient(AthenaClient);
 
 const athena = new Athena({});
-let athenaExpress: AthenaExpress;
+let athenaQuery: AthenaQuery;
 
 beforeEach(() => {
   athenaMock.reset();
-  athenaExpress = new AthenaExpress(athena);
+  athenaQuery = new AthenaQuery(athena);
 });
 
 test("parse to json following ColumnInfo", async () => {
@@ -58,7 +58,7 @@ test("parse to json following ColumnInfo", async () => {
       },
     });
 
-  const resultGen = athenaExpress.query("");
+  const resultGen = athenaQuery.query("");
 
   const res1 = await resultGen.next();
 
@@ -98,7 +98,7 @@ test("wait query completed", async () => {
       },
     });
 
-  const resultGen = athenaExpress.query("");
+  const resultGen = athenaQuery.query("");
 
   const res1 = await resultGen.next();
 
@@ -137,7 +137,7 @@ test("get items with generator", async () => {
       },
     });
 
-  const queryResultGen = athenaExpress.query("");
+  const queryResultGen = athenaQuery.query("");
 
   const res1 = await queryResultGen.next();
   expect(res1.done).toBe(false);
@@ -197,7 +197,7 @@ test("get all item with generator", async () => {
 
   const allItems = [];
 
-  for await (const items of athenaExpress.query("")) {
+  for await (const items of athenaQuery.query("")) {
     allItems.push(...items);
   }
 
@@ -221,7 +221,7 @@ test("throw exception when query is respond as failed", async () => {
       },
     });
 
-  const resultGen = athenaExpress.query("");
+  const resultGen = athenaQuery.query("");
 
   await expect(resultGen.next()).rejects.toThrow("for-test");
 });
@@ -231,7 +231,7 @@ test("throw exception when query is respond as failed", async () => {
     .on(StartQueryExecutionCommand)
     .resolves({ QueryExecutionId: undefined });
 
-  const resultGen = athenaExpress.query("");
+  const resultGen = athenaQuery.query("");
 
   await expect(resultGen.next()).rejects.toThrow(
     "No QueryExecutionId was responded."

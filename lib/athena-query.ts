@@ -7,7 +7,7 @@ type Options = {
   catalog?: string;
 };
 
-export class AthenaExpress {
+export class AthenaQuery {
   constructor(
     private readonly athena: Athena,
     private readonly options?: Options

@@ -1,5 +1,5 @@
 {
-  "name": "athena-express-v3",
+  "name": "athena-query",
   "version": "0.1.0",
   "description": "",
   "main": "./lib/index.js",

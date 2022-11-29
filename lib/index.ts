@@ -1,3 +1,3 @@
-import { AthenaExpress } from "./athenaExpress";
+import { AthenaQuery } from "./athena-query";
 
-export default AthenaExpress;
+export default AthenaQuery;
