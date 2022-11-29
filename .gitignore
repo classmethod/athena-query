@@ -1,0 +1,10 @@
+logs
+*.log
+npm-debug.log*
+
+coverage
+
+node_modules/
+
+lib/*.js
+test/*.js
