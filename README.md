@@ -38,3 +38,7 @@ for await (const items of athenaQuery.query("SELECT * FROM waf_logs;")) {
   console.log(items); // You can get all items with pagination by query.
 }
 ```
+
+## Release
+
+See [here](https://www.notion.so/athena-query-8d4fd5d098b944028dd9c7066a47ffe4#ee977ecfee9840c09e8d7b5a2ed5d3e3). (private)
