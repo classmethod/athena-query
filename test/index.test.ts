@@ -62,19 +62,17 @@ test("parse to json following ColumnInfo", async () => {
 
   const res1 = await resultGen.next();
 
-  expect(res1.value).toEqual([
-    {
-      name: "test-name-1",
-      disabled: true,
-      timestamp: 1669718600001n,
-      score1: 101,
-      score2: 102,
-      score3: 103,
-      score4: 104,
-      rate1: 1.01,
-      rate2: 1.02,
-    },
-  ]);
+  expect(res1.value).toEqual({
+    name: "test-name-1",
+    disabled: true,
+    timestamp: 1669718600001n,
+    score1: 101,
+    score2: 102,
+    score3: 103,
+    score4: 104,
+    rate1: 1.01,
+    rate2: 1.02,
+  });
 });
 
 test("wait query completed", async () => {
@@ -91,10 +89,7 @@ test("wait query completed", async () => {
         ResultSetMetadata: {
           ColumnInfo: [{ Name: "name", Type: "varchar" }],
         },
-        Rows: [
-          { Data: [{ VarCharValue: "test-name-1" }] },
-          { Data: [{ VarCharValue: "test-name-2" }] },
-        ],
+        Rows: [{ Data: [{ VarCharValue: "test-name-1" }] }],
       },
     });
 
@@ -103,10 +98,7 @@ test("wait query completed", async () => {
   const res1 = await resultGen.next();
 
   expect(res1.done).toBe(false);
-  expect(res1.value).toEqual([
-    { name: "test-name-1" },
-    { name: "test-name-2" },
-  ]);
+  expect(res1.value).toEqual({ name: "test-name-1" });
 });
 
 test("get items with generator", async () => {
@@ -141,18 +133,19 @@ test("get items with generator", async () => {
 
   const res1 = await queryResultGen.next();
   expect(res1.done).toBe(false);
-  expect(res1.value).toEqual([
-    { name: "test-name-1" },
-    { name: "test-name-2" },
-  ]);
+  expect(res1.value).toEqual({ name: "test-name-1" });
 
   const res2 = await queryResultGen.next();
   expect(res2.done).toBe(false);
-  expect(res2.value).toEqual([{ name: "test-name-3" }]);
+  expect(res2.value).toEqual({ name: "test-name-2" });
 
   const res3 = await queryResultGen.next();
-  expect(res3.done).toBe(true);
-  expect(res3.value).toBe(undefined);
+  expect(res3.done).toBe(false);
+  expect(res3.value).toEqual({ name: "test-name-3" });
+
+  const res4 = await queryResultGen.next();
+  expect(res4.done).toBe(true);
+  expect(res4.value).toBe(undefined);
 });
 
 test("get all item with generator", async () => {
@@ -197,8 +190,8 @@ test("get all item with generator", async () => {
 
   const allItems = [];
 
-  for await (const items of athenaQuery.query("")) {
-    allItems.push(...items);
+  for await (const item of athenaQuery.query("")) {
+    allItems.push(item);
   }
 
   expect(allItems).toEqual([

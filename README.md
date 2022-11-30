@@ -34,8 +34,8 @@ import AthenaQuery from "athena-query";
 const athena = new Athena({});
 const athenaQuery = new AthenaQuery(athena);
 
-for await (const items of athenaQuery.query("SELECT * FROM waf_logs;")) {
-  console.log(items); // You can get all items with pagination by query.
+for await (const item of athenaQuery.query("SELECT * FROM waf_logs;")) {
+  console.log(item); // You can get all items across pagination.
 }
 ```
 

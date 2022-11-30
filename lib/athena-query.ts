@@ -16,7 +16,11 @@ export class AthenaQuery {
   async *query(
     sql: string,
     options?: { executionParameters?: string[]; maxResults: number }
-  ): AsyncGenerator<Record<string, string | number | BigInt | null>[]> {
+  ): AsyncGenerator<
+    Record<string, string | number | BigInt | null>,
+    void,
+    undefined
+  > {
     const QueryExecutionId = await helpers.startQueryExecution({
       athena: this.athena,
       sql,
@@ -39,7 +43,7 @@ export class AthenaQuery {
         QueryExecutionId,
       });
 
-      yield queryResults.items;
+      yield* queryResults.items;
 
       nextToken = queryResults.nextToken;
     } while (nextToken);
