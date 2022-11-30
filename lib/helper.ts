@@ -62,12 +62,20 @@ async function getQueryResults(params: {
     NextToken: params.NextToken,
   });
   return {
-    items: await cleanUpPaginatedDML(queryResults),
+    items: await cleanUpPaginatedDML(
+      queryResults,
+      // If NextToken is not given, ignore first data.
+      // Because the first data is header info.
+      !params.NextToken
+    ),
     nextToken: queryResults.NextToken,
   };
 }
 
-async function cleanUpPaginatedDML(queryResults: GetQueryResultsCommandOutput) {
+async function cleanUpPaginatedDML(
+  queryResults: GetQueryResultsCommandOutput,
+  ignoreFirstData: boolean
+) {
   const dataTypes = await getDataTypes(queryResults);
   if (!dataTypes) return [];
 
@@ -75,7 +83,11 @@ async function cleanUpPaginatedDML(queryResults: GetQueryResultsCommandOutput) {
   let unformattedS3RowArray: Datum[] | null = null;
   let formattedArray: Record<string, string | number | BigInt | null>[] = [];
 
-  for (let i = 0; i < (queryResults.ResultSet?.Rows?.length ?? 0); i++) {
+  for (
+    let i = ignoreFirstData ? 1 : 0;
+    i < (queryResults.ResultSet?.Rows?.length ?? 0);
+    i++
+  ) {
     unformattedS3RowArray = queryResults.ResultSet?.Rows?.[i].Data ?? null;
 
     if (!unformattedS3RowArray) continue;
