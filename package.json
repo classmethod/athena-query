@@ -1,26 +1,33 @@
 {
-  "name": "athena-query",
+  "name": "@classmethod/athena-query",
   "version": "0.1.0",
-  "description": "",
+  "description": "Athena-Query makes it easier to execute SQL queries on Amazon Athena by consolidating & abstracting several methods in the AWS SDK",
   "main": "./lib/index.js",
   "types": "./lib/index.ts",
-  "scripts": {
-    "build": "tsc",
-    "pretest": "npm run build",
-    "test": "jest"
+  "author": "Classmethod, Inc.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/classmethod/athena-query.git"
   },
+  "bugs": {
+    "url": "https://github.com/classmethod/athena-query/issues"
+  },
+  "homepage": "https://github.com/classmethod/athena-query#readme",
   "keywords": [
     "aws",
     "athena",
-    "amazon",
     "amazon",
     "web",
     "services",
     "sql",
     "database"
   ],
-  "author": "",
-  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "pretest": "npm run build",
+    "test": "jest"
+  },
   "devDependencies": {
     "@aws-sdk/client-athena": "^3.218.0",
     "@types/jest": "^29.2.3",

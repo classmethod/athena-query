@@ -1,11 +1,11 @@
-# Athena Query
+# Athena-Query
 
-**Athena Query** provide simple interface to get athena query results.
+**Athena-Query** provide simple interface to get athena query results.
 
-Athena Query wad inspired and forked from [athena-express](https://github.com/ghdna/athena-express#readme).
+Athena-Query wad inspired and forked from [athena-express](https://github.com/ghdna/athena-express#readme).
 
 > **Warning**
-> Athena Query support aws-sdk v3 only. So if you use aws-sdk v2, we recommend to use [athena-express](https://github.com/ghdna/athena-express#readme).
+> Athena-Query support aws-sdk v3 only. So if you use aws-sdk v2, we recommend to use [athena-express](https://github.com/ghdna/athena-express#readme).
 
 ## Installation
 
@@ -19,7 +19,7 @@ yarn add athena-query @aws-sdk/client-athena
 
 ## Usage
 
-Athena Query provide [async generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function*).
+Athena-Query provide [async generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function*).
 So we can use it with `for await () {}`,
 
 ```ts
