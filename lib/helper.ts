@@ -1,4 +1,3 @@
-import { setTimeout } from "node:timers/promises";
 import {
   Athena,
   Datum,
@@ -16,9 +15,9 @@ async function startQueryExecution(params: {
   const output = await params.athena.startQueryExecution({
     QueryString: params.sql,
     ExecutionParameters: params.executionParameters,
-    WorkGroup: params.workgroup,
+    WorkGroup: params.workgroup || "primary",
     QueryExecutionContext: {
-      Database: params.db,
+      Database: params.db || "default",
       Catalog: params.catalog,
     },
   });
@@ -46,7 +45,7 @@ async function waitExecutionCompleted(params: {
   } else if (state === "FAILED") {
     throw new Error(reason);
   } else {
-    await setTimeout(200);
+    await wait(200);
     await waitExecutionCompleted(params);
   }
 }
@@ -146,5 +145,7 @@ async function getDataTypes(
 
   return columnInfoObject;
 }
+
+const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 export { startQueryExecution, waitExecutionCompleted, getQueryResults };
