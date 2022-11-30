@@ -1,5 +1,10 @@
 # Athena-Query
 
+![Release](https://github.com/classmethod/athena-query/workflows/release/badge.svg)
+![CI](https://github.com/classmethod/athena-query/workflows/CI/badge.svg)
+[![npm version](https://img.shields.io/npm/v/@classmethod/athena-query.svg)](https://www.npmjs.com/@classmethod/athena-query)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/classmethod/athena-query/blob/main/LICENSE)
+
 **Athena-Query** provide simple interface to get athena query results.
 
 Athena-Query wad inspired and forked from [athena-express](https://github.com/ghdna/athena-express#readme).
