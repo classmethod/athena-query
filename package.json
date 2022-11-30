@@ -25,6 +25,7 @@
     "database"
   ],
   "files": [
+    "dist",
     "lib"
   ],
   "scripts": {
