@@ -15,11 +15,11 @@ Athena-Query wad inspired and forked from [athena-express](https://github.com/gh
 ## Installation
 
 ```
-npm install athena-query @aws-sdk/client-athena
+npm install @classmethod/athena-query @aws-sdk/client-athena
 ```
 
 ```
-yarn add athena-query @aws-sdk/client-athena
+yarn add @classmethod/athena-query @aws-sdk/client-athena
 ```
 
 ## Usage
@@ -29,7 +29,7 @@ So we can use it with `for await () {}`,
 
 ```ts
 import { Athena } from "@aws-sdk/client-athena";
-import AthenaQuery from "athena-query";
+import AthenaQuery from "@classmethod/athena-query";
 
 const athena = new Athena({});
 const athenaQuery = new AthenaQuery(athena);
