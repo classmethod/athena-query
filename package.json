@@ -23,6 +23,9 @@
     "sql",
     "database"
   ],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "tsc",
     "pretest": "npm run build",
