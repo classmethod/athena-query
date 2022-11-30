@@ -1,6 +1,6 @@
 {
   "name": "@classmethod/athena-query",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Athena-Query makes it easier to execute SQL queries on Amazon Athena by consolidating & abstracting several methods in the AWS SDK",
   "main": "./lib/index.js",
   "types": "./lib/index.ts",
