@@ -39,6 +39,8 @@ for await (const item of athenaQuery.query("SELECT * FROM waf_logs;")) {
 }
 ```
 
+And if you break loop out, Athena-Query don't call unnecessary pages of `get-query-result` api.
+
 ## Release
 
 See [here](https://www.notion.so/athena-query-8d4fd5d098b944028dd9c7066a47ffe4#ee977ecfee9840c09e8d7b5a2ed5d3e3). (private)
