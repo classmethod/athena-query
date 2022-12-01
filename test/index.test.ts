@@ -43,6 +43,20 @@ test("parse to json following ColumnInfo", async () => {
         },
         Rows: [
           {
+            // header row
+            Data: [
+              { VarCharValue: "name" },
+              { VarCharValue: "disabled" },
+              { VarCharValue: "timestamp" },
+              { VarCharValue: "score1" },
+              { VarCharValue: "score2" },
+              { VarCharValue: "score3" },
+              { VarCharValue: "score4" },
+              { VarCharValue: "rate1" },
+              { VarCharValue: "rate2" },
+            ],
+          },
+          {
             Data: [
               { VarCharValue: "test-name-1" },
               { VarCharValue: "true" },
@@ -90,7 +104,10 @@ test("wait query completed", async () => {
         ResultSetMetadata: {
           ColumnInfo: [{ Name: "name", Type: "varchar" }],
         },
-        Rows: [{ Data: [{ VarCharValue: "test-name-1" }] }],
+        Rows: [
+          { Data: [{ VarCharValue: "test-name-1" }] }, // header row
+          { Data: [{ VarCharValue: "test-name-1" }] },
+        ],
       },
     });
 
@@ -116,6 +133,7 @@ test("get items with generator", async () => {
           ColumnInfo: [{ Name: "name", Type: "varchar" }],
         },
         Rows: [
+          { Data: [{ VarCharValue: "name" }] }, // header row
           { Data: [{ VarCharValue: "test-name-1" }] },
           { Data: [{ VarCharValue: "test-name-2" }] },
         ],
@@ -163,6 +181,7 @@ test("get all item with generator", async () => {
           ColumnInfo: [{ Name: "name", Type: "varchar" }],
         },
         Rows: [
+          { Data: [{ VarCharValue: "name" }] }, // header row
           { Data: [{ VarCharValue: "test-name-1" }] },
           { Data: [{ VarCharValue: "test-name-2" }] },
         ],
