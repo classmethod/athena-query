@@ -1,8 +1,10 @@
-import {
+import type {
   Athena,
-  Datum,
   GetQueryResultsCommandOutput,
 } from "@aws-sdk/client-athena";
+
+export type AtheneRecordData = Record<string, string | number | BigInt | null>;
+type AtheneRecord = AtheneRecordData[];
 
 async function startQueryExecution(params: {
   athena: Athena;
@@ -55,14 +57,14 @@ async function getQueryResults(params: {
   MaxResults?: number;
   NextToken?: string;
   QueryExecutionId: string;
-}) {
+}): Promise<{ items: AtheneRecord; nextToken?: string }> {
   const queryResults = await params.athena.getQueryResults({
     QueryExecutionId: params.QueryExecutionId,
     MaxResults: params.MaxResults,
     NextToken: params.NextToken,
   });
   return {
-    items: await cleanUpPaginatedDML(
+    items: cleanUpPaginatedDML(
       queryResults,
       // If NextToken is not given, ignore first data.
       // Because the first data is header info.
@@ -72,42 +74,39 @@ async function getQueryResults(params: {
   };
 }
 
-async function cleanUpPaginatedDML(
+function cleanUpPaginatedDML(
   queryResults: GetQueryResultsCommandOutput,
   ignoreFirstData: boolean
-) {
-  const dataTypes = await getDataTypes(queryResults);
+): AtheneRecord {
+  const dataTypes = getDataTypes(queryResults);
   if (!dataTypes) return [];
 
   const columnNames = Object.keys(dataTypes);
-  let unformattedS3RowArray: Datum[] | null = null;
-  let formattedArray: Record<string, string | number | BigInt | null>[] = [];
 
-  for (
-    let i = ignoreFirstData ? 1 : 0;
-    i < (queryResults.ResultSet?.Rows?.length ?? 0);
-    i++
-  ) {
-    unformattedS3RowArray = queryResults.ResultSet?.Rows?.[i].Data ?? null;
+  const items = queryResults.ResultSet?.Rows?.reduce((acc, { Data }, index) => {
+    if (ignoreFirstData && index === 0) return acc;
+    if (!Data) return acc;
 
-    if (!unformattedS3RowArray) continue;
-
-    const rowObject = unformattedS3RowArray?.reduce((acc, row, index) => {
+    const rowObject = Data?.reduce((acc, row, index) => {
       if (row.VarCharValue) {
+        // use mutable operation for performance
         acc[columnNames[index]] = row.VarCharValue;
       }
       return acc;
     }, {} as Record<string, string>);
 
-    formattedArray.push(addDataType(rowObject, dataTypes));
-  }
-  return formattedArray;
+    // use mutable operation for performance
+    acc.push(addDataType(rowObject, dataTypes));
+    return acc;
+  }, [] as AtheneRecord);
+
+  return items ?? [];
 }
 
 function addDataType(
   input: Record<string, string>,
   dataTypes: Record<string, string>
-): Record<string, null | string | number | BigInt> {
+): AtheneRecordData {
   const updatedObjectWithDataType: Record<
     string,
     null | string | number | BigInt
@@ -143,9 +142,9 @@ function addDataType(
   return updatedObjectWithDataType;
 }
 
-async function getDataTypes(
+function getDataTypes(
   queryResults: GetQueryResultsCommandOutput
-): Promise<Record<string, string> | undefined> {
+): Record<string, string> | undefined {
   const columnInfoArray = queryResults.ResultSet?.ResultSetMetadata?.ColumnInfo;
 
   const columnInfoObject = columnInfoArray?.reduce((acc, columnInfo) => {
