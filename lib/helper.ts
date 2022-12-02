@@ -62,7 +62,7 @@ async function getQueryResults(params: {
     NextToken: params.NextToken,
   });
   return {
-    items: await cleanUpPaginatedDML(
+    items: cleanUpPaginatedDML(
       queryResults,
       // If NextToken is not given, ignore first data.
       // Because the first data is header info.
@@ -72,11 +72,11 @@ async function getQueryResults(params: {
   };
 }
 
-async function cleanUpPaginatedDML(
+function cleanUpPaginatedDML(
   queryResults: GetQueryResultsCommandOutput,
   ignoreFirstData: boolean
 ) {
-  const dataTypes = await getDataTypes(queryResults);
+  const dataTypes = getDataTypes(queryResults);
   if (!dataTypes) return [];
 
   const columnNames = Object.keys(dataTypes);
@@ -143,9 +143,9 @@ function addDataType(
   return updatedObjectWithDataType;
 }
 
-async function getDataTypes(
+function getDataTypes(
   queryResults: GetQueryResultsCommandOutput
-): Promise<Record<string, string> | undefined> {
+): Record<string, string> | undefined {
   const columnInfoArray = queryResults.ResultSet?.ResultSetMetadata?.ColumnInfo;
 
   const columnInfoObject = columnInfoArray?.reduce((acc, columnInfo) => {
