@@ -15,7 +15,7 @@ export class AthenaQuery {
 
   async *query(
     sql: string,
-    options?: { executionParameters?: string[]; maxResults: number }
+    options?: { executionParameters?: string[]; maxResults?: number }
   ): AsyncGenerator<helpers.AtheneRecordData, void, undefined> {
     const QueryExecutionId = await helpers.startQueryExecution({
       athena: this.athena,
