@@ -4,6 +4,9 @@ import {
   GetQueryResultsCommandOutput,
 } from "@aws-sdk/client-athena";
 
+export type AtheneRecordData = Record<string, string | number | BigInt | null>;
+type AtheneRecord = AtheneRecordData[];
+
 async function startQueryExecution(params: {
   athena: Athena;
   sql: string;
@@ -55,7 +58,7 @@ async function getQueryResults(params: {
   MaxResults?: number;
   NextToken?: string;
   QueryExecutionId: string;
-}) {
+}): Promise<{ items: AtheneRecord; nextToken?: string }> {
   const queryResults = await params.athena.getQueryResults({
     QueryExecutionId: params.QueryExecutionId,
     MaxResults: params.MaxResults,
@@ -75,7 +78,7 @@ async function getQueryResults(params: {
 function cleanUpPaginatedDML(
   queryResults: GetQueryResultsCommandOutput,
   ignoreFirstData: boolean
-) {
+): AtheneRecord {
   const dataTypes = getDataTypes(queryResults);
   if (!dataTypes) return [];
 
@@ -107,7 +110,7 @@ function cleanUpPaginatedDML(
 function addDataType(
   input: Record<string, string>,
   dataTypes: Record<string, string>
-): Record<string, null | string | number | BigInt> {
+): AtheneRecordData {
   const updatedObjectWithDataType: Record<
     string,
     null | string | number | BigInt
