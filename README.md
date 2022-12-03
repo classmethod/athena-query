@@ -24,6 +24,8 @@ yarn add @classmethod/athena-query @aws-sdk/client-athena
 
 ## Usage
 
+### Basic Usage
+
 Athena-Query provide [async generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function*).
 So we can use it with `for await () {}`,
 
@@ -40,6 +42,33 @@ for await (const item of athenaQuery.query("SELECT * FROM waf_logs;")) {
 ```
 
 And if you break loop out, Athena-Query don't call unnecessary pages of `get-query-result` api.
+
+### Options
+
+When you initialize AthenaQuery class, you can pass options to specify the query target.
+
+```ts
+const athenaQuery = new AthenaQuery(athena, {
+  db: "test-db",
+  workgroup: "test-workgroup",
+  catalog: "test-catalog",
+});
+```
+
+When you query to Athena, you can pass options for query.
+
+```ts
+const resultGen = athenaQuery.query(
+  `
+    SELECT * FROM waf_logs
+    WHERE name = ? AND groupId = ? AND score > ?;
+  `,
+  {
+    executionParameters: ["test", 123, 456n],
+    maxResults: 100,
+  }
+);
+```
 
 ## Release
 
