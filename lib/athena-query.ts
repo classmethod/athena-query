@@ -15,12 +15,26 @@ export class AthenaQuery {
 
   async *query(
     sql: string,
-    options?: { executionParameters?: string[]; maxResults?: number }
+    options?: {
+      executionParameters?: (string | number | BigInt)[];
+      maxResults?: number;
+    }
   ): AsyncGenerator<helpers.AtheneRecordData, void, undefined> {
     const QueryExecutionId = await helpers.startQueryExecution({
       athena: this.athena,
       sql,
-      executionParameters: options?.executionParameters,
+      executionParameters: options?.executionParameters?.map((param) => {
+        const typeOfParam = typeof param;
+        switch (typeOfParam) {
+          case "bigint":
+          case "number":
+            return param.toString();
+          case "string":
+            return `'${param}'`;
+          default:
+            throw new Error(`${typeOfParam} type is not allowed.`);
+        }
+      }),
       ...this.options,
     });
 
