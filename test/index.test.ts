@@ -12,11 +12,9 @@ import AthenaQuery from "../index";
 const athenaMock = mockClient(AthenaClient);
 
 const athena = new Athena({});
-let athenaQuery: AthenaQuery;
 
 beforeEach(() => {
   athenaMock.reset();
-  athenaQuery = new AthenaQuery(athena);
 });
 
 test("parse to json following ColumnInfo", async () => {
@@ -73,6 +71,7 @@ test("parse to json following ColumnInfo", async () => {
       },
     });
 
+  const athenaQuery = new AthenaQuery(athena);
   const resultGen = athenaQuery.query("");
 
   const res1 = await resultGen.next();
@@ -111,6 +110,7 @@ test("wait query completed", async () => {
       },
     });
 
+  const athenaQuery = new AthenaQuery(athena);
   const resultGen = athenaQuery.query("");
 
   const res1 = await resultGen.next();
@@ -148,6 +148,7 @@ test("get items with generator", async () => {
       },
     });
 
+  const athenaQuery = new AthenaQuery(athena);
   const queryResultGen = athenaQuery.query("");
 
   const res1 = await queryResultGen.next();
@@ -210,6 +211,7 @@ test("get all item with generator", async () => {
 
   const allItems = [];
 
+  const athenaQuery = new AthenaQuery(athena);
   for await (const item of athenaQuery.query("")) {
     allItems.push(item);
   }
@@ -223,6 +225,64 @@ test("get all item with generator", async () => {
   ]);
 });
 
+test("pass args to sdk", async () => {
+  athenaMock
+    .on(StartQueryExecutionCommand)
+    .resolves({ QueryExecutionId: "test-QueryExecutionId" })
+    .on(GetQueryExecutionCommand)
+    .resolves({ QueryExecution: { Status: { State: "SUCCEEDED" } } })
+    .on(GetQueryResultsCommand)
+    .resolves({
+      ResultSet: {
+        ResultSetMetadata: {
+          ColumnInfo: [{ Name: "name", Type: "varchar" }],
+        },
+        Rows: [
+          // header row
+          { Data: [{ VarCharValue: "name" }] },
+          { Data: [{ VarCharValue: "test-name-1" }] },
+        ],
+      },
+    });
+
+  const athenaQuery = new AthenaQuery(athena, {
+    db: "test-db",
+    workgroup: "test-workgroup",
+    catalog: "test-catalog",
+  });
+  const resultGen = athenaQuery.query("SELECT test FROM test;", {
+    executionParameters: ["'test'", "123"],
+    maxResults: 100,
+  });
+
+  await resultGen.next();
+
+  expect(
+    athenaMock.commandCalls(StartQueryExecutionCommand)[0].args[0].input
+  ).toEqual({
+    QueryString: "SELECT test FROM test;",
+    ExecutionParameters: ["'test'", "123"],
+    WorkGroup: "test-workgroup",
+    QueryExecutionContext: {
+      Catalog: "test-catalog",
+      Database: "test-db",
+    },
+  });
+
+  expect(
+    athenaMock.commandCalls(GetQueryExecutionCommand)[0].args[0].input
+  ).toEqual({
+    QueryExecutionId: "test-QueryExecutionId",
+  });
+
+  expect(
+    athenaMock.commandCalls(GetQueryResultsCommand)[0].args[0].input
+  ).toEqual({
+    QueryExecutionId: "test-QueryExecutionId",
+    MaxResults: 100,
+  });
+});
+
 test("throw exception when query is respond as failed", async () => {
   athenaMock
     .on(StartQueryExecutionCommand)
@@ -234,6 +294,7 @@ test("throw exception when query is respond as failed", async () => {
       },
     });
 
+  const athenaQuery = new AthenaQuery(athena);
   const resultGen = athenaQuery.query("");
 
   await expect(resultGen.next()).rejects.toThrow("for-test");
@@ -244,6 +305,7 @@ test("throw exception when query is respond as failed", async () => {
     .on(StartQueryExecutionCommand)
     .resolves({ QueryExecutionId: undefined });
 
+  const athenaQuery = new AthenaQuery(athena);
   const resultGen = athenaQuery.query("");
 
   await expect(resultGen.next()).rejects.toThrow(
