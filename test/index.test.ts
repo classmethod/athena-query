@@ -251,7 +251,7 @@ test("pass args to sdk", async () => {
     catalog: "test-catalog",
   });
   const resultGen = athenaQuery.query("SELECT test FROM test;", {
-    executionParameters: ["'test'", "123"],
+    executionParameters: ["test", 123, 456n],
     maxResults: 100,
   });
 
@@ -261,7 +261,7 @@ test("pass args to sdk", async () => {
     athenaMock.commandCalls(StartQueryExecutionCommand)[0].args[0].input
   ).toEqual({
     QueryString: "SELECT test FROM test;",
-    ExecutionParameters: ["'test'", "123"],
+    ExecutionParameters: ["'test'", "123", "456"],
     WorkGroup: "test-workgroup",
     QueryExecutionContext: {
       Catalog: "test-catalog",
