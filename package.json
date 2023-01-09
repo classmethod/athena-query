@@ -41,7 +41,7 @@
     "rollup": "^3.5.0",
     "rollup-plugin-typescript2": "^0.34.1",
     "typescript": "^4.9.3",
-    "vitest": "^0.26.3"
+    "vitest": "^0.27.0"
   },
   "peerDependencies": {
     "@aws-sdk/client-athena": "^3.x.x"
