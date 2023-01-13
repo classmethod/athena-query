@@ -30,13 +30,17 @@
   ],
   "scripts": {
     "build": "rm -rf dist && rollup -c",
-    "test": "vitest"
+    "format": "prettier -w .",
+    "test": "vitest",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@aws-sdk/client-athena": "^3.218.0",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@types/node": "^18.11.9",
     "aws-sdk-client-mock": "^2.0.1",
+    "concurrently": "^7.6.0",
+    "husky": "^8.0.3",
     "prettier": "^2.8.0",
     "rollup": "^3.5.0",
     "rollup-plugin-typescript2": "^0.34.1",
