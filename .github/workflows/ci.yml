@@ -26,6 +26,6 @@ jobs:
         with:
           version: 7
           run_install: false
-      - run: pnpm
+      - run: pnpm install
       - run: pnpm test run
       - run: pnpm build
