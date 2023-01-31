@@ -26,7 +26,7 @@ yarn add @classmethod/athena-query @aws-sdk/client-athena
 
 ### Basic Usage
 
-Athena-Query provide [async generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function*).
+Athena-Query provide `query()` method as [async generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function*).
 So we can use it with `for await () {}`,
 
 ```ts
@@ -42,6 +42,8 @@ for await (const item of athenaQuery.query("SELECT * FROM waf_logs;")) {
 ```
 
 And if you break loop out, Athena-Query don't call unnecessary pages of `get-query-result` api.
+
+If you want to reduce the size of the queried data rather than the retrieved data, you can use the [LIMIT clause](https://docs.aws.amazon.com/athena/latest/ug/select.html#select-parameters).
 
 ### Options
 
@@ -65,7 +67,6 @@ const resultGen = athenaQuery.query(
   `,
   {
     executionParameters: ["test", 123, 456n],
-    maxResults: 100,
   }
 );
 ```
