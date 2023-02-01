@@ -7,7 +7,7 @@ import {
   StartQueryExecutionCommand,
 } from "@aws-sdk/client-athena";
 import { mockClient } from "aws-sdk-client-mock";
-import AthenaQuery from "../index";
+import AthenaQuery from "../src";
 
 const athenaMock = mockClient(AthenaClient);
 
