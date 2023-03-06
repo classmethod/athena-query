@@ -43,15 +43,7 @@ jobs:
         run: |
           pnpm version ${{ github.event.inputs.bumpType }}
           echo "VERSION=v$(cat package.json | jq -r '.version')" >> $GITHUB_OUTPUT
-      - name: Commit and Push
-        run: |
-          git commit -am "Bump version up to ${{ steps.bump.outputs.VERSION }}"
           git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Tag and Push
-        run: |
-          git tag ${{ steps.bump.outputs.VERSION }}
           git push --tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
