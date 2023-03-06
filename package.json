@@ -37,7 +37,6 @@
   },
   "scripts": {
     "build": "unbuild",
-    "format": "prettier -c .",
     "test": "vitest",
     "prepare": "husky install"
   },
