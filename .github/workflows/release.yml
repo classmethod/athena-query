@@ -1,13 +1,22 @@
 name: release
 
 on:
-  push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+    inputs:
+      bumpType:
+        description: Bump Type
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -25,17 +34,33 @@ jobs:
       - run: pnpm install
       - run: pnpm test run
       - run: pnpm build
-      - run: pnpm publish
+      - name: Configure git user
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+      - name: Bump package.json version
+        id: bump
+        run: |
+          pnpm version ${{ github.event.inputs.bumpType }}
+          echo "VERSION=v$(cat package.json | jq -r '.version')" >> $GITHUB_OUTPUT
+      - name: Commit and Push
+        run: |
+          git commit -am "Bump version up to ${{ steps.bump.outputs.VERSION }}"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tag and Push
+        run: |
+          git tag ${{ steps.bump.outputs.VERSION }}
+          git push --tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        run: |
+          pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  release-note:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
@@ -56,5 +81,5 @@ jobs:
           release_name: Release ${{ steps.get_version.outputs.VERSION }}
           body: |
             ${{ steps.get_commit_summary.outputs.COMMIT_SUMMARY }}
-          draft: false
-          prerelease: false
+          draft: true
+          prerelease: true
