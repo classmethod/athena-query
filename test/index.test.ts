@@ -37,6 +37,7 @@ test("parse to json following ColumnInfo", async () => {
             { Name: "score4", Type: "int" },
             { Name: "rate1", Type: "float" },
             { Name: "rate2", Type: "double" },
+            { Name: "metadata", Type: "json" },
           ],
         },
         Rows: [
@@ -52,6 +53,7 @@ test("parse to json following ColumnInfo", async () => {
               { VarCharValue: "score4" },
               { VarCharValue: "rate1" },
               { VarCharValue: "rate2" },
+              { VarCharValue: "metadata" },
             ],
           },
           {
@@ -65,6 +67,12 @@ test("parse to json following ColumnInfo", async () => {
               { VarCharValue: "104" },
               { VarCharValue: "1.01" },
               { VarCharValue: "1.02" },
+              {
+                VarCharValue: JSON.stringify({
+                  key1: "value1",
+                  key2: "value2",
+                }),
+              },
             ],
           },
         ],
@@ -86,6 +94,7 @@ test("parse to json following ColumnInfo", async () => {
     score4: 104,
     rate1: 1.01,
     rate2: 1.02,
+    metadata: { key1: "value1", key2: "value2" },
   });
 });
 
