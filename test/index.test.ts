@@ -267,7 +267,7 @@ test("pass args to sdk", async () => {
   await resultGen.next();
 
   expect(
-    athenaMock.commandCalls(StartQueryExecutionCommand)[0].args[0].input
+    athenaMock.commandCalls(StartQueryExecutionCommand)[0].args[0].input,
   ).toEqual({
     QueryString: "SELECT test FROM test;",
     ExecutionParameters: ["'test'", "123", "456"],
@@ -279,13 +279,13 @@ test("pass args to sdk", async () => {
   });
 
   expect(
-    athenaMock.commandCalls(GetQueryExecutionCommand)[0].args[0].input
+    athenaMock.commandCalls(GetQueryExecutionCommand)[0].args[0].input,
   ).toEqual({
     QueryExecutionId: "test-QueryExecutionId",
   });
 
   expect(
-    athenaMock.commandCalls(GetQueryResultsCommand)[0].args[0].input
+    athenaMock.commandCalls(GetQueryResultsCommand)[0].args[0].input,
   ).toEqual({
     QueryExecutionId: "test-QueryExecutionId",
     MaxResults: 100,
@@ -318,7 +318,7 @@ test("throw exception when query is respond as failed", async () => {
   const resultGen = athenaQuery.query("");
 
   await expect(resultGen.next()).rejects.toThrow(
-    "No QueryExecutionId was responded."
+    "No QueryExecutionId was responded.",
   );
 });
 

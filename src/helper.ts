@@ -68,7 +68,7 @@ async function getQueryResults(params: {
       queryResults,
       // If NextToken is not given, ignore first data.
       // Because the first data is header info.
-      !params.NextToken
+      !params.NextToken,
     ),
     nextToken: queryResults.NextToken,
   };
@@ -76,7 +76,7 @@ async function getQueryResults(params: {
 
 function cleanUpPaginatedDML(
   queryResults: GetQueryResultsCommandOutput,
-  ignoreFirstData: boolean
+  ignoreFirstData: boolean,
 ): AtheneRecord {
   const dataTypes = getDataTypes(queryResults);
   if (!dataTypes) return [];
@@ -87,13 +87,16 @@ function cleanUpPaginatedDML(
     if (ignoreFirstData && index === 0) return acc;
     if (!Data) return acc;
 
-    const rowObject = Data?.reduce((acc, row, index) => {
-      if (row.VarCharValue !== undefined && row.VarCharValue !== null) {
-        // use mutable operation for performance
-        acc[columnNames[index]] = row.VarCharValue;
-      }
-      return acc;
-    }, {} as Record<string, string>);
+    const rowObject = Data?.reduce(
+      (acc, row, index) => {
+        if (row.VarCharValue !== undefined && row.VarCharValue !== null) {
+          // use mutable operation for performance
+          acc[columnNames[index]] = row.VarCharValue;
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
 
     // use mutable operation for performance
     acc.push(addDataType(rowObject, dataTypes));
@@ -105,7 +108,7 @@ function cleanUpPaginatedDML(
 
 function addDataType(
   input: Record<string, string>,
-  dataTypes: Record<string, string>
+  dataTypes: Record<string, string>,
 ): AtheneRecordData {
   const updatedObjectWithDataType: Record<
     string,
@@ -146,16 +149,19 @@ function addDataType(
 }
 
 function getDataTypes(
-  queryResults: GetQueryResultsCommandOutput
+  queryResults: GetQueryResultsCommandOutput,
 ): Record<string, string> | undefined {
   const columnInfoArray = queryResults.ResultSet?.ResultSetMetadata?.ColumnInfo;
 
-  const columnInfoObject = columnInfoArray?.reduce((acc, columnInfo) => {
-    if (columnInfo.Name && columnInfo.Type) {
-      acc[columnInfo.Name] = columnInfo.Type;
-    }
-    return acc;
-  }, {} as Record<string, string>);
+  const columnInfoObject = columnInfoArray?.reduce(
+    (acc, columnInfo) => {
+      if (columnInfo.Name && columnInfo.Type) {
+        acc[columnInfo.Name] = columnInfo.Type;
+      }
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
 
   return columnInfoObject;
 }
