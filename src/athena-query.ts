@@ -22,7 +22,7 @@ type Options = {
 export class AthenaQuery {
   constructor(
     private readonly athena: Athena,
-    private readonly options?: Options
+    private readonly options?: Options,
   ) {}
 
   /**
@@ -49,7 +49,7 @@ export class AthenaQuery {
        * @see https://docs.aws.amazon.com/athena/latest/ug/select.html#select-parameters
        */
       maxResults?: number;
-    }
+    },
   ): AsyncGenerator<helpers.AtheneRecordData, void, undefined> {
     const QueryExecutionId = await helpers.startQueryExecution({
       athena: this.athena,
