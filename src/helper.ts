@@ -88,7 +88,7 @@ function cleanUpPaginatedDML(
     if (!Data) return acc;
 
     const rowObject = Data?.reduce((acc, row, index) => {
-      if (row.VarCharValue) {
+      if (row.VarCharValue !== undefined && row.VarCharValue !== null) {
         // use mutable operation for performance
         acc[columnNames[index]] = row.VarCharValue;
       }
@@ -113,7 +113,7 @@ function addDataType(
   > = {};
 
   for (const key in input) {
-    if (!input[key]) {
+    if (input[key] === null || input[key] === undefined) {
       updatedObjectWithDataType[key] = null;
     } else {
       switch (dataTypes[key]) {
