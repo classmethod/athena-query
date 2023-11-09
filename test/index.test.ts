@@ -321,3 +321,42 @@ test("throw exception when query is respond as failed", async () => {
     "No QueryExecutionId was responded."
   );
 });
+
+test("If empty string is returned from AthenaSDK, it will be returned as an empty string", async () => {
+  athenaMock
+    .on(StartQueryExecutionCommand)
+    .resolves({ QueryExecutionId: "test-QueryExecutionId" })
+    .on(GetQueryExecutionCommand)
+    .resolves({ QueryExecution: { Status: { State: "SUCCEEDED" } } })
+    .on(GetQueryResultsCommand)
+    .resolves({
+      ResultSet: {
+        ResultSetMetadata: {
+          ColumnInfo: [
+            { Name: "nullValue", Type: "unknown" },
+            { Name: "emptyValue", Type: "varchar" },
+          ],
+        },
+        Rows: [
+          {
+            // header row
+            Data: [
+              { VarCharValue: "nullValue" },
+              { VarCharValue: "emptyValue" },
+            ],
+          },
+          {
+            Data: [{}, { VarCharValue: "" }],
+          },
+        ],
+      },
+    });
+
+  const athenaQuery = new AthenaQuery(athena);
+  const resultGen = athenaQuery.query("");
+  const res1 = await resultGen.next();
+  expect(res1.value).toEqual({
+    // nullValue is removed from the object
+    emptyValue: "",
+  });
+});
