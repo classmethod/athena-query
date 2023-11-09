@@ -43,7 +43,7 @@
   "devDependencies": {
     "@aws-sdk/client-athena": "^3.282.0",
     "@types/node": "^18.14.6",
-    "aws-sdk-client-mock": "^2.0.1",
+    "aws-sdk-client-mock": "^3.0.0",
     "concurrently": "^7.6.0",
     "husky": "^8.0.3",
     "prettier": "^2.8.4",
