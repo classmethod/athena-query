@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main
-  pull_request:
-
+  pull_request_target:
 jobs:
   test:
     name: Test for Node.js ${{ matrix.node-version }}
