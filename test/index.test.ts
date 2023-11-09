@@ -313,7 +313,7 @@ test("throw exception when query is respond as failed", async () => {
   );
 });
 
-test.only("If empty string is returned from AthenaSDK, it will be returned as an empty string", async () => {
+test("If empty string is returned from AthenaSDK, it will be returned as an empty string", async () => {
   athenaMock
     .on(StartQueryExecutionCommand)
     .resolves({ QueryExecutionId: "test-QueryExecutionId" })
