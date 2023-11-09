@@ -134,6 +134,9 @@ function addDataType(
         case "double":
           updatedObjectWithDataType[key] = Number(input[key]);
           break;
+        case "json":
+          updatedObjectWithDataType[key] = JSON.parse(input[key]);
+          break;
         default:
           updatedObjectWithDataType[key] = input[key];
       }
