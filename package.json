@@ -45,7 +45,7 @@
     "@types/node": "^20.9.0",
     "aws-sdk-client-mock": "^3.0.0",
     "concurrently": "^8.2.2",
-    "husky": "^8.0.3",
+    "husky": "^9.0.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
