@@ -1,6 +1,7 @@
 import type {
   Athena,
   GetQueryResultsCommandOutput,
+  ResultConfiguration,
 } from "@aws-sdk/client-athena";
 
 export type AtheneRecordData = Record<string, string | number | BigInt | null>;
@@ -13,6 +14,7 @@ async function startQueryExecution(params: {
   workgroup?: string;
   db?: string;
   catalog?: string;
+  outputLocation?: string;
 }) {
   const output = await params.athena.startQueryExecution({
     QueryString: params.sql,
@@ -21,6 +23,9 @@ async function startQueryExecution(params: {
     QueryExecutionContext: {
       Database: params.db || "default",
       Catalog: params.catalog,
+    },
+    ResultConfiguration: {
+      OutputLocation: params.outputLocation,
     },
   });
 
