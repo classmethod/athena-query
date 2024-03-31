@@ -54,6 +54,7 @@ const athenaQuery = new AthenaQuery(athena, {
   db: "test-db",
   workgroup: "test-workgroup",
   catalog: "test-catalog",
+  outputLocation: "s3://path/to/query/bucket/",
 });
 ```
 
@@ -67,6 +68,6 @@ const resultGen = athenaQuery.query(
   `,
   {
     executionParameters: ["test", 123, 456n],
-  }
+  },
 );
 ```
