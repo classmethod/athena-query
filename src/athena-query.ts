@@ -17,6 +17,11 @@ type Options = {
    * The name of the data catalog used in the query execution.
    */
   catalog?: string;
+
+  /**
+   * The location in Amazon S3 where your query and calculation results are stored.
+   */
+  outputLocation?: string;
 };
 
 export class AthenaQuery {
