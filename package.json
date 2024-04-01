@@ -46,15 +46,15 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@aws-sdk/client-athena": "^3.445.0",
-    "@types/node": "^20.9.0",
-    "aws-sdk-client-mock": "^3.0.0",
+    "@aws-sdk/client-athena": "^3.540.0",
+    "@types/node": "^20.12.2",
+    "aws-sdk-client-mock": "^4.0.0",
     "concurrently": "^8.2.2",
-    "husky": "^8.0.3",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2",
+    "husky": "^9.0.11",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3",
     "unbuild": "^2.0.0",
-    "vitest": "^0.34.6"
+    "vitest": "^1.4.0"
   },
   "peerDependencies": {
     "@aws-sdk/client-athena": "^3.x.x"
