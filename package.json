@@ -54,7 +54,7 @@
     "prettier": "^3.2.5",
     "typescript": "^5.4.3",
     "unbuild": "^2.0.0",
-    "vitest": "^1.4.0"
+    "vitest": "^3.0.0"
   },
   "peerDependencies": {
     "@aws-sdk/client-athena": "^3.x.x"
