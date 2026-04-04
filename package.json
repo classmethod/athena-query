@@ -43,7 +43,7 @@
   "scripts": {
     "build": "unbuild",
     "test": "vitest",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
     "@aws-sdk/client-athena": "^3.540.0",

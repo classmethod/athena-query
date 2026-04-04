@@ -10,3 +10,5 @@ lib/*.js
 test/*.js
 
 dist
+
+.claude/
