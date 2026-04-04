@@ -17,20 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           registry-url: "https://registry.npmjs.org"
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        id: pnpm-install
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10
           run_install: false
+      - name: Update npm (required for OIDC trusted publishing)
+        run: npm install -g npm@latest
       - run: pnpm install
       - run: pnpm test run
       - run: pnpm build
@@ -38,40 +40,20 @@ jobs:
         run: |
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-      - name: Bump package.json version
+      - name: Bump version
         id: bump
         run: |
           pnpm version ${{ github.event.inputs.bumpType }}
-          echo "VERSION=v$(cat package.json | jq -r '.version')" >> $GITHUB_OUTPUT
+          echo "VERSION=v$(jq -r '.version' package.json)" >> $GITHUB_OUTPUT
           git push
           git push --tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Release
+      - name: Publish to npm
+        run: pnpm publish --provenance --no-git-checks
+      - name: Create GitHub Release
         run: |
-          pnpm publish
+          gh release create ${{ steps.bump.outputs.VERSION }} \
+            --title "Release ${{ steps.bump.outputs.VERSION }}" \
+            --generate-notes \
+            --draft
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-      - name: Get commit summary
-        id: get_commit_summary
-        run: |
-          PREVIOUS_TAG=$(git tag --sort=-creatordate | sed -n 2p)
-          echo "PREVIOUS_TAG: $PREVIOUS_TAG"
-          COMMIT_SUMMARY="$(git log --oneline --pretty=tformat:"%h %s" $PREVIOUS_TAG..${{ github.ref }})"
-          COMMIT_SUMMARY="${COMMIT_SUMMARY//$'\n'/'%0A'}"
-          echo ::set-output name=COMMIT_SUMMARY::$COMMIT_SUMMARY
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
-          release_name: Release ${{ steps.get_version.outputs.VERSION }}
-          body: |
-            ${{ steps.get_commit_summary.outputs.COMMIT_SUMMARY }}
-          draft: true
-          prerelease: true
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
