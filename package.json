@@ -43,6 +43,7 @@
   "scripts": {
     "build": "unbuild",
     "test": "vitest",
+    "typecheck": "tsc --noEmit",
     "prepare": "husky"
   },
   "devDependencies": {

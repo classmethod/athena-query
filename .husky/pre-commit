@@ -1,1 +1,1 @@
-npx concurrently "pnpm:test run"
+npx concurrently "pnpm:test run" "pnpm:typecheck"
